@@ -27,3 +27,6 @@ That should include a `CustomResourceDefinition`.
 ```
 
 That should not include the `CustomResourceDefinition` and keep the `ConfigMap`.
+
+
+<img width="1028" height="1230" alt="image" src="https://github.com/user-attachments/assets/762fa6ea-88fa-4712-8263-01ba1c6d6ebf" />
