@@ -1,0 +1,16 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: hr-with-crd
+  namespace: flux-system
+spec:
+  interval: 10m
+  targetNamespace: demo
+  chart:
+    spec:
+      chart: ./charts/hr-with-crd
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+  values:
+    message: hello from flux-local
