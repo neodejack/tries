@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Amp Host</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Local launcher</p>
+          <h1>Amp Host</h1>
+        </div>
+        <a class="amp-link" href="https://ampcode.com/" target="_blank" rel="noreferrer">Open Amp</a>
+      </header>
+
+      <section class="launcher" aria-label="Launch Amp thread">
+        <form id="launch-form">
+          <label for="directory">Directory</label>
+          <select id="directory" name="directory" required></select>
+
+          <label for="prompt">Prompt</label>
+          <textarea
+            id="prompt"
+            name="prompt"
+            rows="9"
+            maxlength="20000"
+            placeholder="Ask Amp to start work..."
+            required
+          ></textarea>
+
+          <div class="form-footer">
+            <span id="character-count">0 / 20,000</span>
+            <button id="launch-button" type="submit">Launch</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="active-section" aria-live="polite">
+        <div class="section-heading">
+          <h2>Active launches</h2>
+          <span id="active-count">0</span>
+        </div>
+        <div id="active-list" class="active-list"></div>
+        <p id="empty-state" class="empty-state">No active local Amp processes.</p>
+      </section>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  </body>
+</html>
