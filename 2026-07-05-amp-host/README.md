@@ -5,7 +5,7 @@ A tiny Flask web app for starting long-lived local Amp agents from a phone or la
 The app accepts a prompt, resolves a selected allowlisted directory from config, and asks Herdr to start Amp in a long-lived terminal pane:
 
 ```bash
-herdr agent start <name> --cwd "<directory>" --no-focus -- amp
+herdr agent start <name> --cwd "<directory>" --no-focus -- amp --mode deep
 herdr pane run <pane-id> "<prompt>"
 ```
 

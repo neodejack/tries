@@ -78,6 +78,8 @@ class HerdrAgentManager:
                 "--no-focus",
                 "--",
                 "amp",
+                "--mode",
+                "deep",
             ]
         )
         raw_agent = _result(started).get("agent")

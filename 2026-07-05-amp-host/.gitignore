@@ -3,3 +3,4 @@ __pycache__/
 .DS_Store
 .env
 amp-host.config.json
+e2e-*.png
