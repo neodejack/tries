@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 from flask import Flask, abort, jsonify, render_template, request
 
 from amp_host.config import Directory, load_settings
-from amp_host.launches import LaunchManager, LaunchStartError
+from amp_host.herdr import HerdrAgentManager, HerdrError
 
 
 MAX_PROMPT_CHARS = 20_000
@@ -16,7 +16,7 @@ WRITE_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 def create_app() -> Flask:
     app = Flask(__name__)
     settings = load_settings()
-    launch_manager = LaunchManager()
+    launch_manager = HerdrAgentManager(settings.directories)
 
     app.config["AMP_HOST_SETTINGS"] = settings
     app.config["AMP_HOST_LAUNCH_MANAGER"] = launch_manager
@@ -44,7 +44,11 @@ def create_app() -> Flask:
 
     @app.get("/api/launches")
     def api_launches() -> Any:
-        return jsonify({"launches": launch_manager.active_launches_json()})
+        try:
+            launches = launch_manager.active_launches_json()
+        except HerdrError as exc:
+            abort(exc.status_code, exc.message)
+        return jsonify({"launches": launches})
 
     @app.post("/api/launches")
     def api_create_launch() -> Any:
@@ -65,14 +69,17 @@ def create_app() -> Flask:
 
         try:
             launch = launch_manager.start(directory=directory, prompt=prompt)
-        except LaunchStartError as exc:
+        except HerdrError as exc:
             abort(exc.status_code, exc.message)
 
         return jsonify({"launch": launch.as_json()}), 201
 
     @app.post("/api/launches/<launch_id>/kill")
     def api_kill_launch(launch_id: str) -> Any:
-        launch = launch_manager.stop(launch_id)
+        try:
+            launch = launch_manager.stop(launch_id)
+        except HerdrError as exc:
+            abort(exc.status_code, exc.message)
         if launch is None:
             abort(404, "Launch is not active.")
 

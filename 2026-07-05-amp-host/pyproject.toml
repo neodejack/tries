@@ -1,7 +1,7 @@
 [project]
 name = "amp-host"
 version = "0.1.0"
-description = "A local Flask launcher for one-shot Amp runs"
+description = "A local Flask launcher for long-lived Herdr-managed Amp agents"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [

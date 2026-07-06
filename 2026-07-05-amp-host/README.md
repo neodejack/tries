@@ -1,21 +1,25 @@
 # Amp Host
 
-A tiny Flask web app for launching local Amp one-shot runs from a phone or laptop.
+A tiny Flask web app for starting long-lived local Amp agents from a phone or laptop.
 
-The app accepts a prompt, resolves a selected allowlisted directory from config, and starts:
+The app accepts a prompt, resolves a selected allowlisted directory from config, and asks Herdr to start Amp in a long-lived terminal pane:
 
 ```bash
-amp -x "<prompt>"
+herdr agent start <name> --cwd "<directory>" --no-focus -- amp
+herdr pane run <pane-id> "<prompt>"
 ```
 
-It does not show command output or store history. It only tracks currently running local `amp` processes in memory so they can be stopped from the UI.
+It does not show command output or store history. It lists Herdr-managed Amp agents created by this app so they can be stopped from the UI.
 
 ## Setup
 
 ```bash
 mise install
 uv sync
+command -v herdr
 ```
+
+Herdr must be installed and available on `PATH`. On this machine it is installed at `/Users/zili/.local/bin/herdr`.
 
 Edit `amp-host.config.json` to add the directories you want to launch from:
 
@@ -64,6 +68,6 @@ AMP_HOST_CONFIG=/path/to/config.json just run
 ## Safety Notes
 
 - Only configured directories can be selected.
-- Prompts are passed as a direct process argument, not through a shell.
+- Prompts are passed to `herdr pane run` without shell string construction.
 - POST requests with a cross-origin `Origin` header are rejected unless explicitly listed in `allowedOrigins`.
-- Stopping a launch sends `SIGINT`, then `SIGTERM`, then `SIGKILL` to the process group if needed.
+- Stopping an agent closes the Herdr pane for agents created by this app.

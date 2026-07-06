@@ -16,7 +16,7 @@
         <a class="amp-link" href="https://ampcode.com/" target="_blank" rel="noreferrer">Open Amp</a>
       </header>
 
-      <section class="launcher" aria-label="Launch Amp thread">
+      <section class="launcher" aria-label="Start Amp agent">
         <form id="launch-form">
           <label for="directory">Directory</label>
           <select id="directory" name="directory" required></select>
@@ -33,18 +33,18 @@
 
           <div class="form-footer">
             <span id="character-count">0 / 20,000</span>
-            <button id="launch-button" type="submit">Launch</button>
+            <button id="launch-button" type="submit">Start Agent</button>
           </div>
         </form>
       </section>
 
       <section class="active-section" aria-live="polite">
         <div class="section-heading">
-          <h2>Active launches</h2>
+          <h2>Active agents</h2>
           <span id="active-count">0</span>
         </div>
         <div id="active-list" class="active-list"></div>
-        <p id="empty-state" class="empty-state">No active local Amp processes.</p>
+        <p id="empty-state" class="empty-state">No active Amp agents.</p>
       </section>
 
       <div id="toast" class="toast" role="status" aria-live="polite"></div>

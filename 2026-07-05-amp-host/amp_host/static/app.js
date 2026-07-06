@@ -72,8 +72,8 @@ function renderLaunches() {
     const killButton = document.createElement("button");
     killButton.className = "kill-button";
     killButton.type = "button";
-    killButton.title = "Stop launch";
-    killButton.setAttribute("aria-label", `Stop ${launch.directoryLabel} launch`);
+    killButton.title = "Stop agent";
+    killButton.setAttribute("aria-label", `Stop ${launch.directoryLabel} agent`);
     killButton.textContent = launch.stopping ? "..." : "×";
     killButton.disabled = launch.stopping;
     killButton.addEventListener("click", () => killLaunch(launch.id));
@@ -138,7 +138,7 @@ async function createLaunch(event) {
   }
 
   launchButton.disabled = true;
-  launchButton.textContent = "Launching";
+  launchButton.textContent = "Starting";
 
   try {
     const result = await fetchJson("/api/launches", {
@@ -149,12 +149,12 @@ async function createLaunch(event) {
     promptInput.value = "";
     updateCharacterCount();
     renderLaunches();
-    setToast("Amp launch started.", "success");
+    setToast("Amp agent started.", "success");
   } catch (error) {
     setToast(error.message, "error");
   } finally {
     launchButton.disabled = false;
-    launchButton.textContent = "Launch";
+    launchButton.textContent = "Start Agent";
   }
 }
 
@@ -166,7 +166,7 @@ async function killLaunch(launchId) {
 
   try {
     await fetchJson(`/api/launches/${launchId}/kill`, { method: "POST" });
-    setToast("Stopping launch.", "success");
+    setToast("Stopping agent.", "success");
     window.setTimeout(refreshLaunches, 500);
   } catch (error) {
     setToast(error.message, "error");
