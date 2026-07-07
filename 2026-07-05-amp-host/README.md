@@ -48,13 +48,15 @@ Open <http://127.0.0.1:8765>.
 
 ## Run For Tailscale Access
 
-Bind to all interfaces when you want to reach the app from your phone over Tailscale:
+Use Tailscale Serve when you want to reach the app from your phone over Tailscale:
 
 ```bash
 just tailscale
 ```
 
-Then open `http://<your-mac-tailscale-name-or-ip>:8765` from your phone.
+Then open the Tailscale Serve URL printed by the command from your phone.
+By default this uses the Tailscale service name `svc:amp-host`, which serves Amp Host at `https://amp-host.<your-tailnet>.ts.net/`.
+The Tailscale Serve mapping is installed in the background; `just tailscale` stays running because the local Flask server runs in the foreground.
 
 ## Config Path
 

@@ -11,8 +11,12 @@ sync:
 
 # run the Flask server
 run host='127.0.0.1' port='8765':
-    uv run flask --app amp_host run --host "{{host}}" --port "{{port}}"
+    uv run flask --app amp_host run --host "{{ host }}" --port "{{ port }}"
 
-# run the Flask server on all interfaces for Tailscale access
-tailscale port='8765':
-    just run "0.0.0.0" "{{port}}"
+# run the Flask server through Tailscale Serve
+[script('bash')]
+tailscale port='8765' service='svc:amp-host':
+    set -euo pipefail
+
+    tailscale serve --bg --service "{{ service }}" "{{ port }}"
+    uv run flask --app amp_host run --host 127.0.0.1 --port "{{ port }}"
