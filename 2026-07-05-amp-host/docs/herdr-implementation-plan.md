@@ -9,7 +9,7 @@ Replace Amp Host's local `amp -x` process launcher with a Herdr-backed long-live
 - Use Herdr CLI wrappers first, not the raw socket API. The validated CLI is sufficient for start, prompt submission, list, read, and close.
 - Use the `herdr` binary from `PATH`. The current laptop resolves this to `/Users/zili/.local/bin/herdr`, installed by the official curl installer.
 - Keep the existing `/api/launches` route names for the first implementation to avoid unnecessary frontend churn. Internally, rename the backend manager from launches to Herdr agents.
-- Use `herdr agent start <name> --cwd <dir> --no-focus -- amp --mode deep` to create the long-lived Amp process.
+- Use `herdr agent start <name> --cwd <dir> --workspace <remote-workspace-id> --no-focus -- amp --mode deep` to create the long-lived Amp process.
 - Use `herdr pane run <pane_id> <prompt>` to submit the initial prompt. This validated with both single-line and multiline prompts.
 - Use `herdr pane close <pane_id>` for the v1 stop action.
 - Filter Herdr agents by a generated `amp-host-` name prefix and by allowlisted cwd so the app does not manage unrelated Herdr panes.

@@ -15,6 +15,7 @@ from amp_host.config import Directory
 
 AGENT_NAME_PREFIX = "amp-host-"
 HERDR_COMMAND = "herdr"
+HERDR_WORKSPACE_LABEL = "remote"
 
 
 @dataclass(frozen=True)
@@ -68,6 +69,7 @@ class HerdrAgentManager:
 
         name = _agent_name()
         started_at = time.time()
+        workspace_id = _ensure_workspace(HERDR_WORKSPACE_LABEL)
         started = _run_json(
             [
                 "agent",
@@ -75,6 +77,8 @@ class HerdrAgentManager:
                 name,
                 "--cwd",
                 str(directory.path),
+                "--workspace",
+                workspace_id,
                 "--no-focus",
                 "--",
                 "amp",
@@ -236,6 +240,40 @@ def _agent_name() -> str:
     timestamp = time.strftime("%Y%m%d%H%M%S")
     suffix = "".join(random.choices(string.ascii_lowercase + string.digits, k=6))
     return f"{AGENT_NAME_PREFIX}{timestamp}-{suffix}"
+
+
+def _ensure_workspace(label: str) -> str:
+    existing_workspace_id = _workspace_id_by_label(label)
+    if existing_workspace_id is not None:
+        return existing_workspace_id
+
+    created = _run_json(
+        [
+            "workspace",
+            "create",
+            "--label",
+            label,
+            "--no-focus",
+        ]
+    )
+    raw_workspace = _result(created).get("workspace")
+    if not isinstance(raw_workspace, dict):
+        raise HerdrError("Herdr did not return a workspace record.")
+    return _required_str(raw_workspace, "workspace_id")
+
+
+def _workspace_id_by_label(label: str) -> str | None:
+    listed = _run_json(["workspace", "list"])
+    raw_workspaces = _result(listed).get("workspaces", [])
+    if not isinstance(raw_workspaces, list):
+        raise HerdrError("Herdr returned an invalid workspace list.")
+
+    for raw_workspace in raw_workspaces:
+        if not isinstance(raw_workspace, dict):
+            continue
+        if raw_workspace.get("label") == label:
+            return _optional_str(raw_workspace, "workspace_id")
+    return None
 
 
 def _started_at_from_name(name: str) -> float:

@@ -51,7 +51,7 @@ The temporary Homebrew install used during validation has been removed.
 Results:
 
 - `herdr status server` showed a running compatible server.
-- `herdr agent start <name> --cwd <dir> --no-focus -- amp --mode deep` successfully created a Herdr pane running Amp.
+- `herdr agent start <name> --cwd <dir> --workspace <remote-workspace-id> --no-focus -- amp --mode deep` successfully created a Herdr pane running Amp.
 - After a short startup delay, Herdr detected the pane as `agent: "amp"` and `agent_status: "idle"`.
 - `herdr agent list` and `herdr agent get <name>` returned enough metadata for Amp Host: agent name, status, cwd, foreground cwd, pane id, tab id, terminal id, and workspace id.
 - `herdr agent send <name> <prompt>` typed literal text into Amp but did not submit it.
@@ -77,6 +77,7 @@ Conclusion: use `agent start` to create the Amp process and `pane run` to send t
    ```bash
    herdr agent start amp-host-20260705-abc123 \
      --cwd /absolute/allowed/dir \
+     --workspace <remote-workspace-id> \
      --no-focus \
      -- amp --mode deep
    ```
@@ -190,7 +191,7 @@ The local mise registry did not expose Herdr during validation, so do not add it
 2. Start agents with:
 
    ```bash
-   herdr agent start <name> --cwd <dir> --no-focus -- amp --mode deep
+   herdr agent start <name> --cwd <dir> --workspace <remote-workspace-id> --no-focus -- amp --mode deep
    ```
 
 3. Extract `pane_id` from the JSON result.
