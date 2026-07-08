@@ -42,9 +42,32 @@ The browser sends only the directory `id`; the server resolves the path from thi
 
 ```bash
 just run
+# or choose a port
+just run 9000
 ```
 
 Open <http://127.0.0.1:8765>.
+
+`just run` first stops any server registered in `dev-ports.json`, then starts
+the Flask dev server on the requested port. After `/api/config` is healthy it
+writes local runtime state like:
+
+```json
+{
+  "dev-server": {
+    "host": "localhost",
+    "port": 8765,
+    "url": "http://localhost:8765",
+    "pid": 12345
+  }
+}
+```
+
+Use `just down` to stop the registered dev server. Pressing Control-C in
+`just run` also removes `dev-ports.json` when it still points to the server that
+command started. If `dev-ports.json` is stale or unsafe, the command leaves it
+in place and prints manual recovery steps; inspect it and delete it only after
+confirming it no longer points to a live Amp Host dev server.
 
 ## Run For Tailscale Access
 

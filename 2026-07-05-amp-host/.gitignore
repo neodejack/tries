@@ -3,4 +3,5 @@ __pycache__/
 .DS_Store
 .env
 amp-host.config.json
+dev-ports.json
 e2e-*.png

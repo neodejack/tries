@@ -10,8 +10,12 @@ sync:
     uv sync
 
 # run the Flask server
-run host='127.0.0.1' port='8765':
-    uv run flask --app amp_host run --host "{{ host }}" --port "{{ port }}"
+run port='8765':
+    uv run python -m amp_host.dev_server run "{{ port }}"
+
+# stop the registered Flask dev server
+down:
+    uv run python -m amp_host.dev_server down
 
 # run the Flask server through Tailscale Serve
 [script('bash')]
