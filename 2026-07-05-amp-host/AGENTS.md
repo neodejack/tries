@@ -90,3 +90,5 @@ There is no dedicated test suite yet. For launch lifecycle changes, perform a He
 - Herdr workspace labels are user-facing; the app resolves the workspace labeled `remote` to a workspace id before launching Amp.
 - The selected project directory is still passed per launch with `--cwd`, even though all launches target the `remote` Herdr workspace.
 - Amp launches must include `--mode deep`.
+- Amp prompt submission needs both `herdr pane run <pane_id> <prompt>` and `herdr pane send-keys <pane_id> enter`.
+- Herdr's reported Amp `agent_status` is not authoritative; do not use it for working/idle lifecycle decisions.

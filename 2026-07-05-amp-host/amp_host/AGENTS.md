@@ -43,10 +43,11 @@ just run
 herdr agent start <name> --cwd <allowed-dir> --workspace <remote-workspace-id> --no-focus -- amp --mode deep
 ```
 
-- Submit the initial prompt with `herdr pane run <pane_id> <prompt>`.
+- Submit the initial prompt with `herdr pane run <pane_id> <prompt>`, then `herdr pane send-keys <pane_id> enter`.
 - Close panes with `herdr pane close <pane_id>` for the stop action.
 - Clean up a newly created pane if Amp detection or prompt submission fails.
 - Filter active agents by both the `amp-host-` name prefix and allowlisted cwd values.
+- Do not make Amp Host behavior depend on Herdr's reported Amp `agent_status`; Amp uses screen-manifest detection without a lifecycle integration, so `idle` can be a fallback rather than a true state.
 - Do not manage Herdr panes created outside this app.
 
 ## Frontend conventions

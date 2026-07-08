@@ -10,9 +10,10 @@ Replace Amp Host's local `amp -x` process launcher with a Herdr-backed long-live
 - Use the `herdr` binary from `PATH`. The current laptop resolves this to `/Users/zili/.local/bin/herdr`, installed by the official curl installer.
 - Keep the existing `/api/launches` route names for the first implementation to avoid unnecessary frontend churn. Internally, rename the backend manager from launches to Herdr agents.
 - Use `herdr agent start <name> --cwd <dir> --workspace <remote-workspace-id> --no-focus -- amp --mode deep` to create the long-lived Amp process.
-- Use `herdr pane run <pane_id> <prompt>` to submit the initial prompt. This validated with both single-line and multiline prompts.
+- Use `herdr pane run <pane_id> <prompt>` followed by `herdr pane send-keys <pane_id> enter` to submit the initial prompt.
 - Use `herdr pane close <pane_id>` for the v1 stop action.
 - Filter Herdr agents by a generated `amp-host-` name prefix and by allowlisted cwd so the app does not manage unrelated Herdr panes.
+- Do not depend on Herdr's reported Amp `agent_status` for working/idle behavior; Amp currently has screen-manifest detection without a lifecycle integration.
 
 ## Task List
 
@@ -69,13 +70,13 @@ Replace Amp Host's local `amp -x` process launcher with a Herdr-backed long-live
 
 ## Task 3: Replace Local LaunchManager With HerdrAgentManager
 
-**Description:** Replace `LaunchManager` usage with a manager that starts Herdr-backed Amp agents and submits the prompt through `pane run`.
+**Description:** Replace `LaunchManager` usage with a manager that starts Herdr-backed Amp agents and submits the prompt through `pane run` plus an explicit Enter.
 
 **Acceptance criteria:**
 - [ ] `POST /api/launches` validates the same payload as before.
 - [ ] It starts a Herdr agent with a unique `amp-host-` name.
 - [ ] It extracts `pane_id` from `agent start`.
-- [ ] It submits the prompt via `herdr pane run <pane_id> <prompt>`.
+- [ ] It submits the prompt via `herdr pane run <pane_id> <prompt>` and `herdr pane send-keys <pane_id> enter`.
 - [ ] It returns a launch-shaped JSON object the current frontend can render.
 
 **Verification:**
@@ -192,7 +193,7 @@ Replace Amp Host's local `amp -x` process launcher with a Herdr-backed long-live
 - [ ] `uv run python -m compileall amp_host`
 - [ ] `just run` starts the app
 - [ ] Browser can start an Amp agent
-- [ ] Herdr shows the agent with `agent_status`
+- [ ] Herdr detects the launched process as `agent: "amp"`
 - [ ] Browser can stop the agent
 - [ ] Multiline prompt works
 - [ ] Existing local `amp-host.config.json` stays ignored
@@ -204,7 +205,8 @@ Replace Amp Host's local `amp -x` process launcher with a Herdr-backed long-live
 | Herdr server is not running | High | Adapter reports a setup error and README documents `herdr` startup. |
 | `herdr` is missing from PATH | High | Adapter checks command availability and returns a clear error. |
 | Herdr CLI JSON changes | Medium | Keep parsing localized in `amp_host/herdr.py`. |
-| `pane run` behavior changes for Amp | Medium | Keep validation notes and add a fallback to `agent send` + `pane send-keys enter`. |
+| `pane run` behavior changes for Amp | Medium | Always follow prompt text injection with `pane send-keys enter`, and keep validation notes current. |
+| Herdr reports stale or fallback Amp status | Medium | Treat `agent_status` as display/diagnostic metadata only; do not use it for Amp lifecycle decisions. |
 | Accidentally managing unrelated Herdr panes | High | Require both `amp-host-` name prefix and allowlisted cwd. |
 | Flask restart loses prompt previews | Low | Store preview in Herdr agent name is too cramped; accept missing preview in v1 or keep an optional in-memory preview cache. |
 

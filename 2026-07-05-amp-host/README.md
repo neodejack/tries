@@ -7,9 +7,10 @@ The app accepts a prompt, resolves a selected allowlisted directory from config,
 ```bash
 herdr agent start <name> --cwd "<directory>" --workspace <remote-workspace-id> --no-focus -- amp --mode deep
 herdr pane run <pane-id> "<prompt>"
+herdr pane send-keys <pane-id> enter
 ```
 
-It does not show command output or store history. It lists Herdr-managed Amp agents created by this app so they can be stopped from the UI.
+It does not show command output or store history. It lists Herdr-managed Amp agents created by this app so they can be stopped from the UI. Herdr's reported Amp `agent_status` is not treated as authoritative because Amp currently uses screen-manifest detection without a lifecycle integration.
 
 ## Setup
 
@@ -93,6 +94,6 @@ AMP_HOST_CONFIG=/path/to/config.json just run
 ## Safety Notes
 
 - Only configured directories can be selected.
-- Prompts are passed to `herdr pane run` without shell string construction.
+- Prompts are passed to `herdr pane run` without shell string construction, then submitted with `herdr pane send-keys enter`.
 - POST requests with a cross-origin `Origin` header are rejected unless explicitly listed in `allowedOrigins`.
 - Stopping an agent closes the Herdr pane for agents created by this app.

@@ -95,7 +95,7 @@ class HerdrAgentManager:
 
         try:
             raw_agent = self._wait_for_amp_agent(name)
-            _run_json(["pane", "run", pane_id, prompt])
+            _submit_amp_prompt(pane_id, prompt)
         except HerdrError:
             _close_pane_best_effort(pane_id)
             raise
@@ -289,6 +289,11 @@ def _close_pane_best_effort(pane_id: str) -> None:
         _run_json(["pane", "close", pane_id])
     except HerdrError:
         pass
+
+
+def _submit_amp_prompt(pane_id: str, prompt: str) -> None:
+    _run_json(["pane", "run", pane_id, prompt])
+    _run_json(["pane", "send-keys", pane_id, "enter"])
 
 
 def _ensure_herdr_available() -> None:

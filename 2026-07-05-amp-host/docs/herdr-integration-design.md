@@ -56,11 +56,11 @@ Results:
 - `herdr agent list` and `herdr agent get <name>` returned enough metadata for Amp Host: agent name, status, cwd, foreground cwd, pane id, tab id, terminal id, and workspace id.
 - `herdr agent send <name> <prompt>` typed literal text into Amp but did not submit it.
 - `herdr pane send-keys <pane_id> enter` submitted text previously typed by `agent send`.
-- `herdr pane run <pane_id> <prompt>` was the best prompt-submission primitive. It submits text plus Enter atomically.
-- `herdr pane run` successfully submitted a multiline prompt to Amp.
+- `herdr pane run <pane_id> <prompt>` placed text into Amp's input box, but current Amp/Herdr behavior can leave the prompt unsent.
+- `herdr pane run` followed by `herdr pane send-keys <pane_id> enter` successfully submitted the prompt to Amp.
 - `herdr pane close <pane_id>` removed the validation agent and pane from Herdr's list.
 
-Conclusion: use `agent start` to create the Amp process and `pane run` to send the initial prompt.
+Conclusion: use `agent start` to create the Amp process, `pane run` to place the initial prompt, and `pane send-keys enter` to submit it.
 
 ## Launch Flow
 
@@ -84,13 +84,14 @@ Conclusion: use `agent start` to create the Amp process and `pane run` to send t
 
 5. Flask sends the prompt to the Herdr terminal.
 
-   Use `pane run`, not `agent send`, because `pane run` submits text plus Enter atomically and validated successfully with multiline prompts:
+   Use `pane run` to place the text, then send Enter explicitly. Amp's terminal UI can accept text from `pane run` without treating the command as submitted.
 
    ```bash
    herdr pane run <pane_id> "$PROMPT"
+   herdr pane send-keys <pane_id> enter
    ```
 
-   `agent send` is still useful for low-level literal input, but it only types text. To submit after `agent send`, the app would also need:
+   `agent send` is still useful for low-level literal input, but it only types text. It also needs the same explicit submit step:
 
    ```bash
    herdr pane send-keys <pane_id> enter
@@ -109,6 +110,8 @@ herdr agent list --json
 Filter to agent names with the `amp-host-` prefix and directories in the configured allowlist.
 
 This means Amp Host can recover active launched agents after a Flask restart, as long as Herdr is still running.
+
+Do not treat Herdr's Amp `agent_status` as an authoritative working/idle signal. Herdr detects Amp with a screen manifest and no lifecycle integration, so `idle` can be the default fallback when no screen rule matches.
 
 ## Stopping Agents
 
@@ -200,11 +203,13 @@ The local mise registry did not expose Herdr during validation, so do not add it
 
    ```bash
    herdr pane run <pane_id> "$PROMPT"
+   herdr pane send-keys <pane_id> enter
    ```
 
-6. List active agents with `agent list` filtered to the `amp-host-` prefix and allowlisted directories.
-7. Stop agents with `pane close <pane_id>`.
-8. Surface Herdr CLI errors in the UI toast.
+6. Treat `agent_status` as diagnostic metadata only for Amp.
+7. List active agents with `agent list` filtered to the `amp-host-` prefix and allowlisted directories.
+8. Stop agents with `pane close <pane_id>`.
+9. Surface Herdr CLI errors in the UI toast.
 
 ## Recommendation
 
