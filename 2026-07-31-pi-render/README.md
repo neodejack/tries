@@ -34,6 +34,26 @@ pi -e /Users/zili/code/personal/tries/2026-07-31-pi-render/src/index.ts
 The extension is loaded only into that newly started process. This command does
 not alter already-running Pi sessions or permanently install the extension.
 
+## Install for all future Pi sessions
+
+```sh
+pi install /Users/zili/code/personal/tries/2026-07-31-pi-render
+```
+
+Pi records the local package path in the user-level
+`~/.pi/agent/settings.json`; it does not copy the project. New Pi processes
+will load the extension automatically. Confirm it with:
+
+```sh
+pi list
+```
+
+To remove it later:
+
+```sh
+pi remove /Users/zili/code/personal/tries/2026-07-31-pi-render
+```
+
 ## Verification
 
 The automated checks cover the spinner state machine, timer cleanup,
