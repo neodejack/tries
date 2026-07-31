@@ -1,0 +1,27 @@
+{
+  "name": "pi-amp-tool-renderer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A borderless Amp-inspired renderer for selected Pi built-in tools",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
+    "check": "pnpm run typecheck && pnpm run test",
+    "smoke": "pi -e ./src/index.ts"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": ">=0.83.0 <1",
+    "@earendil-works/pi-tui": ">=0.83.0 <1"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "0.83.0",
+    "@earendil-works/pi-tui": "0.83.0",
+    "@types/node": "^24.2.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
